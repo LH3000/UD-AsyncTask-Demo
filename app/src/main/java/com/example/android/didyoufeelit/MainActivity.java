@@ -20,8 +20,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import java.net.URL;
-
 /**
  * Displays the perceived strength of a single earthquake event based on responses from people who
  * felt the earthquake.
@@ -76,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         //urls is a Var Arg (...), which means it is an array, thus url[0]
         protected Event doInBackground(String... urls) {
+            // Don't perform the request if there are no URLs, or the first url is null
+            if (urls.length < 1 || urls[0] == null) {
+                return null;
+            }
             // Perform the HTTP request for earthquake data and process the response.
             Event earthquakeResult = Utils.fetchEarthquakeData(urls[0]);
             return earthquakeResult;
@@ -91,6 +93,11 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Event earthquakeResult) {
+            // if no result, do nothing
+            if (earthquakeResult == null) {
+                return;
+            }
+
             // Update the information displayed to the user.
             updateUi(earthquakeResult);
         }
